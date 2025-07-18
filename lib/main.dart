@@ -1,169 +1,45 @@
+// Flutter Material Design Bibliothek importieren.
+// Enthält alles, was wir für UI-Elemente wie Buttons, AppBar, Text etc. brauchen.
 import 'package:flutter/material.dart';
 
+// Unsere eigene Datei mit dem Startscreen der App (TravelHomePage) importieren.
+import 'screens/travel_home_page.dart';
+
+// Einstiegspunkt der App. Wird beim Start einmal aufgerufen.
 void main() {
+  // Wir starten unsere App und übergeben ihr das oberste Widget: TravelApp.
   runApp(const TravelApp());
 }
 
+// TravelApp ist das Wurzel-Widget der gesamten App. Es ist "stateless",
+// also verändert sich der Inhalt dieses Widgets selbst nicht.
 class TravelApp extends StatelessWidget {
   const TravelApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // MaterialApp ist das Grundgerüst der App im Material Design-Stil.
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text("Travel Picks")),
-        body: const TravelHomePage(),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-            BottomNavigationBarItem(icon: Icon(Icons.search), label: "Suche"),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil"),
-          ],
-        ),
+      // App-Titel (z. B. sichtbar im App-Switcher oder bei manchen Android-Versionen)
+      title: 'Travel Picks',
+
+      // Hier definieren wir das globale Theme der App.
+      theme: ThemeData(
+        // Farb-Basis für das gesamte Farbschema der App
+        colorSchemeSeed: Colors.teal,
+
+        // Aktiviert das moderne Material Design 3 (auch "Material You")
+        useMaterial3: true,
+
+        // Legt fest, ob die App hell oder dunkel ist (hier: hell)
+        brightness: Brightness.light,
       ),
-    );
-  }
-}
 
-//TravelHomePage
-class TravelHomePage extends StatefulWidget {
-  const TravelHomePage({super.key});
+      // Entfernt das "Debug"-Banner oben rechts im App-Fenster
+      debugShowCheckedModeBanner: false,
 
-  @override
-  State<TravelHomePage> createState() => _TravelHomePageState();
-}
-
-class _TravelHomePageState extends State<TravelHomePage> {
-  final List<String> _selectedCountries = [];
-
-  void _addCountry(String countryName) {
-    if (!_selectedCountries.contains(countryName)) {
-      setState(() {
-        _selectedCountries.add(countryName);
-      });
-    }
-  }
-
-  static final List<Map<String, String>> europeCountries = [
-    {"emoji": "🇮🇹", "name": "Italien"},
-    {"emoji": "🇪🇸", "name": "Spanien"},
-    {"emoji": "🇩🇪", "name": "Deutschland"},
-    {"emoji": "🇫🇷", "name": "Frankreich"},
-    {"emoji": "🇳🇴", "name": "Norwegen"},
-  ];
-
-  static final List<Map<String, String>> southAmericaCountries = [
-    {"emoji": "🇧🇷", "name": "Brasilien"},
-    {"emoji": "🇦🇷", "name": "Argentinien"},
-    {"emoji": "🇨🇱", "name": "Chile"},
-    {"emoji": "🇵🇪", "name": "Peru"},
-    {"emoji": "🇨🇴", "name": "Kolumbien"},
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Card(
-            elevation: 4,
-            color: Colors.lightBlueAccent,
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Text(
-                "🌎 Willkommen zu deinen Reiseinspirationen",
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ),
-            ),
-          ),
-          SizedBox(height: 24),
-          const Text("Europa", style: TextStyle(fontSize: 18)),
-          const SizedBox(height: 8),
-          SizedBox(
-            height: 140,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: europeCountries
-                  .map(
-                    (country) => CountryCard(
-                      emoji: country["emoji"]!,
-                      name: country["name"]!,
-                      onTap: () => _addCountry(country["name"]!),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-          const SizedBox(height: 24),
-          const Text("Südamerika", style: TextStyle(fontSize: 18)),
-          const SizedBox(height: 8),
-          SizedBox(
-            height: 140,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: southAmericaCountries
-                  .map(
-                    (country) => CountryCard(
-                      emoji: country["emoji"]!,
-                      name: country["name"]!,
-                      onTap: () => _addCountry(country["name"]!),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-          const SizedBox(height: 24),
-          const Text("Favoriten", style: TextStyle(fontSize: 18)),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            children: _selectedCountries
-                .map((name) => Chip(label: Text(name)))
-                .toList(),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-//CountryCard
-class CountryCard extends StatelessWidget {
-  final String emoji;
-  final String name;
-  final VoidCallback? onTap;
-
-  const CountryCard({
-    super.key,
-    required this.emoji,
-    required this.name,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 120,
-        margin: const EdgeInsets.symmetric(horizontal: 8),
-        child: Card(
-          elevation: 4,
-          child: Padding(
-            padding: EdgeInsetsGeometry.symmetric(vertical: 16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(emoji, style: TextStyle(fontSize: 32)),
-                const SizedBox(height: 8),
-                Text(name),
-              ],
-            ),
-          ),
-        ),
-      ),
+      // Das Start-Widget der App – also was als erstes angezeigt wird
+      home: const TravelHomePage(),
     );
   }
 }
